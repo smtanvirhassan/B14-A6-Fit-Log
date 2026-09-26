@@ -1,15 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { usePlan } from "@/context/PlanContext";
 import { useToast } from "@/context/ToastContext";
 import type { Workout } from "@/types/workout";
 
 type Tab = "plan" | "saved";
 
-export default function MyPlanPage() {
+function MyPlanContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+
   const {
     planWorkouts,
     savedWorkouts,
@@ -19,20 +23,30 @@ export default function MyPlanPage() {
   } = usePlan();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<Tab>("plan");
+  const [activeTab, setActiveTab] = useState<Tab>(
+    tabParam === "saved" ? "saved" : "plan"
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 400);
+    if (tabParam === "saved") {
+      setActiveTab("saved");
+    } else if (tabParam === "plan") {
+      setActiveTab("plan");
+    }
+  }, [tabParam]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
 
   const currentList: Workout[] =
     activeTab === "plan" ? planWorkouts : savedWorkouts;
 
-  const exercises = planWorkouts.length;
-  const minutes = planWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
-  const calories = planWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
+  const exercises = currentList.length;
+  const minutes = currentList.reduce((sum, w) => sum + (w.duration || 0), 0);
+  const calories = currentList.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
 
   const handleMarkAsDone = (id: number) => {
     markAsDone(id);
@@ -280,5 +294,13 @@ export default function MyPlanPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function MyPlanPage() {
+  return (
+    <Suspense fallback={<div className="flex flex-1 items-center justify-center py-20 text-muted">Loading workouts…</div>}>
+      <MyPlanContent />
+    </Suspense>
   );
 }

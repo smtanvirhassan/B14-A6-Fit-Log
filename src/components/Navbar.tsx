@@ -50,13 +50,13 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-3 md:flex">
           <Link
-            href="/my-plan"
+            href="/my-plan?tab=plan"
             className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background transition-opacity hover:opacity-90"
           >
             Plan <span>{planCount}</span>
           </Link>
           <Link
-            href="/my-plan"
+            href="/my-plan?tab=saved"
             className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
           >
             Saved <span>{savedCount}</span>
@@ -111,14 +111,14 @@ export default function Navbar() {
             })}
             <div className="flex items-center gap-3 pt-2">
               <Link
-                href="/my-plan"
+                href="/my-plan?tab=plan"
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background"
               >
                 Plan <span>{planCount}</span>
               </Link>
               <Link
-                href="/my-plan"
+                href="/my-plan?tab=saved"
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent"
               >
