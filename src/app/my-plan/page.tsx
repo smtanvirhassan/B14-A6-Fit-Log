@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePlan } from "@/context/PlanContext";
+import { useToast } from "@/context/ToastContext";
 import type { Workout } from "@/types/workout";
 
 type Tab = "plan" | "saved";
@@ -16,6 +17,7 @@ export default function MyPlanPage() {
     removeFromSaved,
     markAsDone,
   } = usePlan();
+  const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<Tab>("plan");
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,21 @@ export default function MyPlanPage() {
   const exercises = planWorkouts.length;
   const minutes = planWorkouts.reduce((sum, w) => sum + w.duration, 0);
   const calories = planWorkouts.reduce((sum, w) => sum + w.caloriesBurned, 0);
+
+  const handleMarkAsDone = (id: number) => {
+    markAsDone(id);
+    showToast("Workout marked as done!");
+  };
+
+  const handleRemoveFromPlan = (id: number) => {
+    removeFromPlan(id);
+    showToast("Removed from plan");
+  };
+
+  const handleRemoveFromSaved = (id: number) => {
+    removeFromSaved(id);
+    showToast("Removed from saved");
+  };
 
   return (
     <main className="flex flex-1 flex-col">
@@ -143,15 +160,51 @@ export default function MyPlanPage() {
                   <p className="text-xs text-muted">{workout.equipment}</p>
                   <div className="flex items-center gap-4 text-xs text-muted">
                     <span className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
                       {workout.duration} min
                     </span>
                     <span className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12c0-3 2.5-6 2.5-6s2.5 3 2.5 6a2.5 2.5 0 1 1-5 0Z"/><path d="M12 21a8 8 0 0 1-8-8c0-5 4-9 4-9s1.5 1 2.5 3c.5-1.5 1.5-3 1.5-3s4 4 4 9a8 8 0 0 1-4.5 7.2"/></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 12c0-3 2.5-6 2.5-6s2.5 3 2.5 6a2.5 2.5 0 1 1-5 0Z" />
+                        <path d="M12 21a8 8 0 0 1-8-8c0-5 4-9 4-9s1.5 1 2.5 3c.5-1.5 1.5-3 1.5-3s4 4 4 9a8 8 0 0 1-4.5 7.2" />
+                      </svg>
                       {workout.caloriesBurned} kcal
                     </span>
                     <span className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
                       {workout.rating}
                     </span>
                   </div>
@@ -168,28 +221,66 @@ export default function MyPlanPage() {
                   {activeTab === "plan" && (
                     <>
                       <button
-                        onClick={() => markAsDone(workout.id)}
-                        className="rounded-lg bg-green-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-400 transition-colors hover:bg-green-600/30"
+                        onClick={() => handleMarkAsDone(workout.id)}
+                        className="rounded-lg bg-green-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-400 transition-colors hover:bg-green-600/30 flex items-center gap-1"
                         title="Mark as Done"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
                       </button>
                       <button
-                        onClick={() => removeFromPlan(workout.id)}
-                        className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30"
+                        onClick={() => handleRemoveFromPlan(workout.id)}
+                        className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1"
                         title="Remove"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
                       </button>
                     </>
                   )}
                   {activeTab === "saved" && (
                     <button
-                      onClick={() => removeFromSaved(workout.id)}
-                      className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30"
+                      onClick={() => handleRemoveFromSaved(workout.id)}
+                      className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1"
                       title="Remove"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
                     </button>
                   )}
                 </div>
