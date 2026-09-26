@@ -14,7 +14,4 @@ export interface Workout {
   instructions: string[];
 }
 
-export interface WorkoutsResponse {
-  Workouts: Workout[];
-  Count: number;
-}
+export type WorkoutsResponse = Workout[] | { Workouts?: Workout[]; workouts?: Workout[]; Count?: number };

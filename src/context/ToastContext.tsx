@@ -42,7 +42,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Toast Notification Container */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0">
         {toasts.map((toast) => (
           <div
@@ -89,7 +88,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-muted hover:text-foreground transition-colors p-1"
+              className="text-muted hover:text-foreground transition-colors p-1 cursor-pointer"
               aria-label="Dismiss toast"
             >
               <svg

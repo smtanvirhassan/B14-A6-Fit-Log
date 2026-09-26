@@ -5,14 +5,11 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24 lg:px-8">
-       
         <div className="flex flex-col items-start gap-6">
-     
           <span className="inline-block rounded-full border border-accent/40 bg-accent/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-accent">
             Workout Library
           </span>
 
-        
           <h1 className="font-display text-4xl font-bold uppercase leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Train with intent.{" "}
             <span className="text-accent">Log every set.</span>

@@ -25,7 +25,15 @@ export default function Library() {
         const res = await fetch("https://api.abcz.workers.dev/api/fitlog");
         if (!res.ok) throw new Error("Failed to fetch workouts");
         const data: WorkoutsResponse = await res.json();
-        setWorkouts(data.Workouts);
+        if (Array.isArray(data)) {
+          setWorkouts(data);
+        } else if (data && Array.isArray(data.Workouts)) {
+          setWorkouts(data.Workouts);
+        } else if (data && Array.isArray(data.workouts)) {
+          setWorkouts(data.workouts);
+        } else {
+          setWorkouts([]);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -35,9 +43,10 @@ export default function Library() {
     fetchWorkouts();
   }, []);
 
-  const sorted = [...workouts].sort((a, b) => {
-    if (sortBy === "rating") return b[sortBy] - a[sortBy];
-    return a[sortBy] - b[sortBy];
+  const safeWorkouts = Array.isArray(workouts) ? workouts : [];
+  const sorted = [...safeWorkouts].sort((a, b) => {
+    if (sortBy === "rating") return (b[sortBy] ?? 0) - (a[sortBy] ?? 0);
+    return (a[sortBy] ?? 0) - (b[sortBy] ?? 0);
   });
 
   const currentLabel =
@@ -46,7 +55,6 @@ export default function Library() {
   return (
     <section id="library" className="bg-background py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header row */}
         <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-foreground sm:text-4xl">
@@ -57,7 +65,6 @@ export default function Library() {
             </p>
           </div>
 
-          {/* Sort dropdown */}
           <div className="relative">
             <button
               onClick={() => setSortOpen(!sortOpen)}
@@ -103,7 +110,6 @@ export default function Library() {
           </div>
         </div>
 
-        {/* Loading state */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-card-border border-t-accent" />
@@ -111,14 +117,12 @@ export default function Library() {
           </div>
         )}
 
-        {/* Error state */}
         {error && (
           <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-6 py-10 text-center">
             <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
 
-        {/* Workout grid */}
         {!loading && !error && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sorted.map((workout) => (

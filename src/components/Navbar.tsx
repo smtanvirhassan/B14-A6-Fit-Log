@@ -19,7 +19,6 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-card-border bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-     
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="FitLog logo" width={28} height={28} />
           <span className="font-display text-lg font-bold tracking-wide text-foreground">
@@ -49,26 +48,24 @@ export default function Navbar() {
           })}
         </div>
 
-        
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/my-plan"
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background"
+            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background transition-opacity hover:opacity-90"
           >
             Plan <span>{planCount}</span>
           </Link>
           <Link
             href="/my-plan"
-            className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent"
+            className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
           >
             Saved <span>{savedCount}</span>
           </Link>
         </div>
 
-  
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex flex-col items-center justify-center gap-1.5 md:hidden"
+          className="flex flex-col items-center justify-center gap-1.5 md:hidden cursor-pointer p-2"
           aria-label="Toggle navigation menu"
         >
           <span

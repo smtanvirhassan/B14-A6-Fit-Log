@@ -22,7 +22,6 @@ export default function MyPlanPage() {
   const [activeTab, setActiveTab] = useState<Tab>("plan");
   const [loading, setLoading] = useState(true);
 
-  // Simulate brief loading state
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(timer);
@@ -31,10 +30,9 @@ export default function MyPlanPage() {
   const currentList: Workout[] =
     activeTab === "plan" ? planWorkouts : savedWorkouts;
 
-  // Metrics (based on plan workouts only)
   const exercises = planWorkouts.length;
-  const minutes = planWorkouts.reduce((sum, w) => sum + w.duration, 0);
-  const calories = planWorkouts.reduce((sum, w) => sum + w.caloriesBurned, 0);
+  const minutes = planWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
+  const calories = planWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
 
   const handleMarkAsDone = (id: number) => {
     markAsDone(id);
@@ -54,7 +52,6 @@ export default function MyPlanPage() {
   return (
     <main className="flex flex-1 flex-col">
       <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold uppercase tracking-tight text-foreground sm:text-4xl">
             My Plan
@@ -64,7 +61,6 @@ export default function MyPlanPage() {
           </p>
         </div>
 
-        {/* Metrics */}
         <div className="mb-8 grid grid-cols-3 gap-4">
           {[
             { label: "Exercises", value: exercises },
@@ -85,11 +81,10 @@ export default function MyPlanPage() {
           ))}
         </div>
 
-        {/* Tabs */}
         <div className="mb-6 flex gap-1 rounded-lg border border-card-border bg-card p-1">
           <button
             onClick={() => setActiveTab("plan")}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors ${
+            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
               activeTab === "plan"
                 ? "bg-accent text-background"
                 : "text-muted hover:text-foreground"
@@ -99,7 +94,7 @@ export default function MyPlanPage() {
           </button>
           <button
             onClick={() => setActiveTab("saved")}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors ${
+            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
               activeTab === "saved"
                 ? "bg-accent text-background"
                 : "text-muted hover:text-foreground"
@@ -109,14 +104,12 @@ export default function MyPlanPage() {
           </button>
         </div>
 
-        {/* Loading state */}
         {loading && (
           <div className="flex items-center justify-center py-20">
             <p className="text-sm text-muted">Loading workouts…</p>
           </div>
         )}
 
-        {/* Content */}
         {!loading && currentList.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-card-border bg-card px-6 py-16 text-center">
             <h3 className="font-display text-xl font-bold uppercase tracking-wide text-foreground">
@@ -141,7 +134,6 @@ export default function MyPlanPage() {
                 key={workout.id}
                 className="flex flex-col gap-4 rounded-xl border border-card-border bg-card p-4 sm:flex-row sm:items-center"
               >
-                {/* Thumbnail */}
                 <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-lg bg-zinc-900 sm:h-20 sm:w-20">
                   <Image
                     src={workout.image}
@@ -152,7 +144,6 @@ export default function MyPlanPage() {
                   />
                 </div>
 
-                {/* Info */}
                 <div className="flex flex-1 flex-col gap-1">
                   <h3 className="font-display text-sm font-bold uppercase tracking-wide text-foreground">
                     {workout.name}
@@ -210,7 +201,6 @@ export default function MyPlanPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2 sm:shrink-0">
                   <Link
                     href={`/workout/${workout.id}`}
@@ -222,7 +212,7 @@ export default function MyPlanPage() {
                     <>
                       <button
                         onClick={() => handleMarkAsDone(workout.id)}
-                        className="rounded-lg bg-green-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-400 transition-colors hover:bg-green-600/30 flex items-center gap-1"
+                        className="rounded-lg bg-green-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-400 transition-colors hover:bg-green-600/30 flex items-center gap-1 cursor-pointer"
                         title="Mark as Done"
                       >
                         <svg
@@ -241,7 +231,7 @@ export default function MyPlanPage() {
                       </button>
                       <button
                         onClick={() => handleRemoveFromPlan(workout.id)}
-                        className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1"
+                        className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1 cursor-pointer"
                         title="Remove"
                       >
                         <svg
@@ -264,7 +254,7 @@ export default function MyPlanPage() {
                   {activeTab === "saved" && (
                     <button
                       onClick={() => handleRemoveFromSaved(workout.id)}
-                      className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1"
+                      className="rounded-lg bg-red-600/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 transition-colors hover:bg-red-600/30 flex items-center gap-1 cursor-pointer"
                       title="Remove"
                     >
                       <svg

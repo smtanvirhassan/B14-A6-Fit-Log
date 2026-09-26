@@ -12,7 +12,6 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
       href={`/workout/${workout.id}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-card-border bg-card transition-all hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5"
     >
-   
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
         <Image
           src={workout.image}
@@ -24,9 +23,8 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
-        
         <div className="flex flex-wrap gap-1.5">
-          {workout.muscleGroups.map((group) => (
+          {workout.muscleGroups?.map((group) => (
             <span
               key={group}
               className="rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent"
@@ -36,17 +34,13 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
           ))}
         </div>
 
-       
         <h3 className="font-display text-base font-bold uppercase tracking-wide text-foreground">
           {workout.name}
         </h3>
 
-       
         <p className="text-xs text-muted">{workout.equipment}</p>
 
-      
         <div className="mt-auto flex items-center gap-4 border-t border-card-border pt-3 text-xs text-muted">
-          
           <span className="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +59,6 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
             {workout.duration} min
           </span>
 
-         
           <span className="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
