@@ -9,6 +9,13 @@ import { useToast } from "@/context/ToastContext";
 import type { Workout } from "@/types/workout";
 
 type Tab = "plan" | "saved";
+type SortKey = "duration" | "caloriesBurned" | "rating";
+
+const SORT_OPTIONS: { label: string; value: SortKey }[] = [
+  { label: "Duration", value: "duration" },
+  { label: "Calories", value: "caloriesBurned" },
+  { label: "Rating", value: "rating" },
+];
 
 function MyPlanContent() {
   const searchParams = useSearchParams();
@@ -27,6 +34,8 @@ function MyPlanContent() {
     tabParam === "saved" ? "saved" : "plan"
   );
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<SortKey>("duration");
+  const [sortOpen, setSortOpen] = useState(false);
 
   useEffect(() => {
     if (tabParam === "saved") {
@@ -47,6 +56,14 @@ function MyPlanContent() {
   const exercises = currentList.length;
   const minutes = currentList.reduce((sum, w) => sum + (w.duration || 0), 0);
   const calories = currentList.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
+
+  const sortedList = [...currentList].sort((a, b) => {
+    if (sortBy === "rating") return (b[sortBy] ?? 0) - (a[sortBy] ?? 0);
+    return (a[sortBy] ?? 0) - (b[sortBy] ?? 0);
+  });
+
+  const currentLabel =
+    SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? "Duration";
 
   const handleMarkAsDone = (id: number) => {
     markAsDone(id);
@@ -95,27 +112,76 @@ function MyPlanContent() {
           ))}
         </div>
 
-        <div className="mb-6 flex gap-1 rounded-lg border border-card-border bg-card p-1">
-          <button
-            onClick={() => setActiveTab("plan")}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === "plan"
-                ? "bg-accent text-background"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            Today&apos;s Plan
-          </button>
-          <button
-            onClick={() => setActiveTab("saved")}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === "saved"
-                ? "bg-accent text-background"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            Saved
-          </button>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-1 rounded-lg border border-card-border bg-card p-1">
+            <button
+              onClick={() => setActiveTab("plan")}
+              className={`rounded-md px-5 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
+                activeTab === "plan"
+                  ? "bg-accent text-background"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              Today&apos;s Plan
+            </button>
+            <button
+              onClick={() => setActiveTab("saved")}
+              className={`rounded-md px-5 py-2 text-sm font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
+                activeTab === "saved"
+                  ? "bg-accent text-background"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              Saved
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted">Sort By</span>
+            <div className="relative">
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="inline-flex items-center gap-2 rounded-lg border border-card-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-accent/40 cursor-pointer"
+              >
+                {currentLabel}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`transition-transform ${sortOpen ? "rotate-180" : ""}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {sortOpen && (
+                <div className="absolute right-0 z-10 mt-1 w-36 overflow-hidden rounded-lg border border-card-border bg-card shadow-xl">
+                  {SORT_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setSortBy(option.value);
+                        setSortOpen(false);
+                      }}
+                      className={`block w-full px-4 py-2 text-left text-sm transition-colors hover:bg-accent/10 cursor-pointer ${
+                        sortBy === option.value
+                          ? "font-semibold text-accent"
+                          : "text-muted"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {loading && (
@@ -124,9 +190,9 @@ function MyPlanContent() {
           </div>
         )}
 
-        {!loading && currentList.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-card-border bg-card px-6 py-16 text-center">
-            <h3 className="font-display text-xl font-bold uppercase tracking-wide text-foreground">
+        {!loading && sortedList.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-zinc-800 bg-card/40 px-6 py-20 text-center">
+            <h3 className="font-display text-2xl font-bold uppercase tracking-wide text-foreground">
               Nothing here yet
             </h3>
             <p className="max-w-sm text-sm text-muted">
@@ -134,16 +200,16 @@ function MyPlanContent() {
             </p>
             <Link
               href="/"
-              className="mt-2 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-background transition-colors hover:bg-accent/90"
+              className="mt-2 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-bold uppercase tracking-wider text-background transition-colors hover:bg-accent/90 cursor-pointer shadow-lg shadow-accent/10"
             >
               Go to workouts
             </Link>
           </div>
         )}
 
-        {!loading && currentList.length > 0 && (
+        {!loading && sortedList.length > 0 && (
           <div className="flex flex-col gap-4">
-            {currentList.map((workout) => (
+            {sortedList.map((workout) => (
               <div
                 key={workout.id}
                 className="flex flex-col gap-4 rounded-xl border border-card-border bg-card p-4 sm:flex-row sm:items-center"
