@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-card-border bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
+     
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="FitLog logo" width={28} height={28} />
           <span className="font-display text-lg font-bold tracking-wide text-foreground">
@@ -25,7 +25,6 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isActive =
@@ -64,7 +63,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
+  
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="flex flex-col items-center justify-center gap-1.5 md:hidden"
@@ -88,7 +87,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="border-t border-card-border bg-background px-4 pb-4 pt-2 md:hidden">
           <div className="flex flex-col gap-3">
