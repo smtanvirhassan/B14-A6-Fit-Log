@@ -12,7 +12,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
       href={`/workout/${workout.id}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-card-border bg-card transition-all hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5"
     >
-      {/* Image */}
+   
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
         <Image
           src={workout.image}
@@ -84,7 +84,6 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
             {workout.caloriesBurned} kcal
           </span>
 
-          {/* Rating */}
           <span className="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"

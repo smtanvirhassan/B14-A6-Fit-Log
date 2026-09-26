@@ -5,10 +5,12 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Workout } from "@/types/workout";
+import { usePlan } from "@/context/PlanContext";
 
 export default function WorkoutDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const { addToPlan, addToSaved } = usePlan();
 
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
@@ -146,6 +148,7 @@ export default function WorkoutDetailPage() {
           {/* Action buttons */}
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <button
+              onClick={() => addToPlan(workout)}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-bold uppercase tracking-wider text-background transition-colors hover:bg-accent/90"
             >
               <svg
@@ -166,6 +169,7 @@ export default function WorkoutDetailPage() {
             </button>
 
             <button
+              onClick={() => addToSaved(workout)}
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent px-6 py-3 text-sm font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
             >
               <svg

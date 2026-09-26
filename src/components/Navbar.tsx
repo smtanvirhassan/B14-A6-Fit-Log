@@ -4,10 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { usePlan } from "@/context/PlanContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { planCount, savedCount } = usePlan();
 
   const navLinks = [
     { href: "/", label: "Workout" },
@@ -47,19 +49,19 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Desktop badges */}
+        
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/my-plan"
             className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background"
           >
-            Plan <span>0</span>
+            Plan <span>{planCount}</span>
           </Link>
           <Link
             href="/my-plan"
             className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent"
           >
-            Saved <span>0</span>
+            Saved <span>{savedCount}</span>
           </Link>
         </div>
 
@@ -116,14 +118,14 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-background"
               >
-                Plan <span>0</span>
+                Plan <span>{planCount}</span>
               </Link>
               <Link
                 href="/my-plan"
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent"
               >
-                Saved <span>0</span>
+                Saved <span>{savedCount}</span>
               </Link>
             </div>
           </div>
