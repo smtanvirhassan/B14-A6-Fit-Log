@@ -58,9 +58,3 @@ npm run build
 npm start
 ```
 
----
-
-## 📬 Submission
-
-- **Live Link**: 
-- **GitHub Repository Link**: 
